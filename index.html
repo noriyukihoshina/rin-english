@@ -31,7 +31,7 @@
     <style>
         body {
             font-family: 'Inter', 'M PLUS Rounded 1c', sans-serif;
-            background-color: #FFF5F7;
+            background-color: #F3D600;
         }
         .perspective { perspective: 1000px; }
         .preserve-3d { transform-style: preserve-3d; }
@@ -138,11 +138,11 @@
                 </div>
             </div>
             
-            <p class="mt-6 text-xs md:text-sm text-gray-400 font-medium">※カードをタップ、または [Enter] キーでめくります</p>
+            <p class="mt-6 text-xs md:text-sm text-gray-800 font-bold bg-white/90 px-4 py-1.5 rounded-full shadow-sm">※カードをタップ、または [Enter] キーでめくります</p>
         </div>
 
         <div id="list-area" class="w-full hidden flex-col items-center">
-            <h2 class="text-xl font-bold mb-3 text-gray-800">単語学習履歴一覧</h2>
+            <h2 class="text-xl font-bold mb-3 text-gray-800 bg-white/90 px-6 py-1.5 rounded-full shadow-sm">単語学習履歴一覧</h2>
             <div class="flex gap-2 mb-4 bg-rin-100 p-1 rounded-full shadow-inner">
                 <button id="filter-review-btn" class="px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rin-700 shadow-sm transition-all" onclick="setListFilter('review')">要復習（直近×）のみ</button>
                 <button id="filter-all-btn" class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rin-700 transition-all" onclick="setListFilter('all')">全履歴（累計ミスあり）</button>
@@ -209,38 +209,98 @@
 
         let app, auth, db;
 
-        // 小学生向け基本英単語（30問サンプル：後からいつでもテキストで差し替え可能）
+        // 小学生向け英単語（90問：基本60単語＋重要名詞30単語）
         const initialWordList = [
-            { id: 1, en: "apple", kana: "（アップル）", ja: "りんご", mistakes: 0, history: [] },
-            { id: 2, en: "dog", kana: "（ドッグ）", ja: "犬（いぬ）", mistakes: 0, history: [] },
-            { id: 3, en: "cat", kana: "（キャット）", ja: "猫（ねこ）", mistakes: 0, history: [] },
-            { id: 4, en: "book", kana: "（ブック）", ja: "本（ほん）", mistakes: 0, history: [] },
-            { id: 5, en: "pen", kana: "（ペン）", ja: "ペン", mistakes: 0, history: [] },
-            { id: 6, en: "desk", kana: "（デスク）", ja: "机（つくえ）", mistakes: 0, history: [] },
-            { id: 7, en: "chair", kana: "（チェア）", ja: "いす", mistakes: 0, history: [] },
-            { id: 8, en: "friend", kana: "（フレンド）", ja: "友達（ともだち）", mistakes: 0, history: [] },
-            { id: 9, en: "teacher", kana: "（ティーチャー）", ja: "先生（せんせい）", mistakes: 0, history: [] },
-            { id: 10, en: "school", kana: "（スクール）", ja: "学校（がっこう）", mistakes: 0, history: [] },
-            { id: 11, en: "red", kana: "（レッド）", ja: "赤（あか）", mistakes: 0, history: [] },
-            { id: 12, en: "blue", kana: "（ブルー）", ja: "青（あお）", mistakes: 0, history: [] },
-            { id: 13, en: "yellow", kana: "（イエロー）", ja: "黄色（きいろ）", mistakes: 0, history: [] },
-            { id: 14, en: "green", kana: "（グリーン）", ja: "緑（みどり）", mistakes: 0, history: [] },
-            { id: 15, en: "white", kana: "（ホワイト）", ja: "白（しろ）", mistakes: 0, history: [] },
-            { id: 16, en: "one", kana: "（ワン）", ja: "1（ひとつ）", mistakes: 0, history: [] },
-            { id: 17, en: "two", kana: "（ツー）", ja: "2（ふたつ）", mistakes: 0, history: [] },
-            { id: 18, en: "three", kana: "（スリー）", ja: "3（みっつ）", mistakes: 0, history: [] },
-            { id: 19, en: "four", kana: "（フォー）", ja: "4（よっつ）", mistakes: 0, history: [] },
-            { id: 20, en: "five", kana: "（ファイブ）", ja: "5（いつつ）", mistakes: 0, history: [] },
-            { id: 21, en: "sun", kana: "（サン）", ja: "太陽（たいよう）", mistakes: 0, history: [] },
-            { id: 22, en: "moon", kana: "（ムーン）", ja: "月（つき）", mistakes: 0, history: [] },
-            { id: 23, en: "star", kana: "（スター）", ja: "星（ほし）", mistakes: 0, history: [] },
-            { id: 24, en: "water", kana: "（ウォーター）", ja: "水（みず）", mistakes: 0, history: [] },
-            { id: 25, en: "milk", kana: "（ミルク）", ja: "牛乳（ぎゅうにゅう）", mistakes: 0, history: [] },
-            { id: 26, en: "hello", kana: "（ハロー）", ja: "こんにちは", mistakes: 0, history: [] },
-            { id: 27, en: "thank you", kana: "（サンキュー）", ja: "ありがとう", mistakes: 0, history: [] },
-            { id: 28, en: "good morning", kana: "（グッドモーニング）", ja: "おはよう", mistakes: 0, history: [] },
-            { id: 29, en: "goodbye", kana: "（グッドバイ）", ja: "さようなら", mistakes: 0, history: [] },
-            { id: 30, en: "play", kana: "（プレイ）", ja: "遊ぶ（あそぶ）", mistakes: 0, history: [] }
+            { id: 1, en: "is", kana: "（イズ）", ja: "〜です", mistakes: 0, history: [] },
+            { id: 2, en: "am", kana: "（アム）", ja: "〜です", mistakes: 0, history: [] },
+            { id: 3, en: "look", kana: "（ルック）", ja: "見る", mistakes: 0, history: [] },
+            { id: 4, en: "make", kana: "（メイク）", ja: "〜を作る", mistakes: 0, history: [] },
+            { id: 5, en: "see", kana: "（シー）", ja: "見る", mistakes: 0, history: [] },
+            { id: 6, en: "are", kana: "（アー）", ja: "〜である", mistakes: 0, history: [] },
+            { id: 7, en: "get", kana: "（ゲット）", ja: "〜を得る", mistakes: 0, history: [] },
+            { id: 8, en: "buy", kana: "（バイ）", ja: "〜を買う", mistakes: 0, history: [] },
+            { id: 9, en: "study", kana: "（スタディ）", ja: "勉強する", mistakes: 0, history: [] },
+            { id: 10, en: "ride", kana: "（ライド）", ja: "乗る", mistakes: 0, history: [] },
+            { id: 11, en: "watch", kana: "（ウォッチ）", ja: "〜を見る", mistakes: 0, history: [] },
+            { id: 12, en: "teach", kana: "（ティーチ）", ja: "〜を教える", mistakes: 0, history: [] },
+            { id: 13, en: "does", kana: "（ダズ）", ja: "〜する（doの3単現）", mistakes: 0, history: [] },
+            { id: 14, en: "put", kana: "（プット）", ja: "〜を置く", mistakes: 0, history: [] },
+            { id: 15, en: "meet", kana: "（ミート）", ja: "〜に会う", mistakes: 0, history: [] },
+            { id: 16, en: "turn", kana: "（ターン）", ja: "曲がる", mistakes: 0, history: [] },
+            { id: 17, en: "walk", kana: "（ウォーク）", ja: "歩く", mistakes: 0, history: [] },
+            { id: 18, en: "like", kana: "（ライク）", ja: "〜が好きである", mistakes: 0, history: [] },
+            { id: 19, en: "cook", kana: "（クック）", ja: "料理する", mistakes: 0, history: [] },
+            { id: 20, en: "eat", kana: "（イート）", ja: "食べる", mistakes: 0, history: [] },
+            { id: 21, en: "swim", kana: "（スウィム）", ja: "泳ぐ", mistakes: 0, history: [] },
+            { id: 22, en: "play", kana: "（プレイ）", ja: "遊ぶ", mistakes: 0, history: [] },
+            { id: 23, en: "drink", kana: "（ドリンク）", ja: "〜を飲む", mistakes: 0, history: [] },
+            { id: 24, en: "run", kana: "（ラン）", ja: "走る", mistakes: 0, history: [] },
+            { id: 25, en: "ski", kana: "（スキー）", ja: "スキーをする", mistakes: 0, history: [] },
+            { id: 26, en: "read", kana: "（リード）", ja: "読む", mistakes: 0, history: [] },
+            { id: 27, en: "fall", kana: "（フォール）", ja: "落ちる", mistakes: 0, history: [] },
+            { id: 28, en: "sing", kana: "（シング）", ja: "歌う", mistakes: 0, history: [] },
+            { id: 29, en: "skate", kana: "（スケート）", ja: "スケートをする", mistakes: 0, history: [] },
+            { id: 30, en: "check", kana: "（チェック）", ja: "〜を確認する", mistakes: 0, history: [] },
+            { id: 31, en: "class", kana: "（クラス）", ja: "授業", mistakes: 0, history: [] },
+            { id: 32, en: "eraser", kana: "（イレイサー）", ja: "消しゴム", mistakes: 0, history: [] },
+            { id: 33, en: "year", kana: "（イヤー）", ja: "年", mistakes: 0, history: [] },
+            { id: 34, en: "pencil", kana: "（ペンシル）", ja: "えんぴつ", mistakes: 0, history: [] },
+            { id: 35, en: "sport", kana: "（スポーツ）", ja: "スポーツ", mistakes: 0, history: [] },
+            { id: 36, en: "museum", kana: "（ミュージアム）", ja: "博物館", mistakes: 0, history: [] },
+            { id: 37, en: "house", kana: "（ハウス）", ja: "家", mistakes: 0, history: [] },
+            { id: 38, en: "pen", kana: "（ペン）", ja: "ペン", mistakes: 0, history: [] },
+            { id: 39, en: "school", kana: "（スクール）", ja: "学校", mistakes: 0, history: [] },
+            { id: 40, en: "box", kana: "（ボックス）", ja: "箱", mistakes: 0, history: [] },
+            { id: 41, en: "book", kana: "（ブック）", ja: "本", mistakes: 0, history: [] },
+            { id: 42, en: "girl", kana: "（ガール）", ja: "女の子", mistakes: 0, history: [] },
+            { id: 43, en: "station", kana: "（ステーション）", ja: "駅", mistakes: 0, history: [] },
+            { id: 44, en: "breakfast", kana: "（ブレックファスト）", ja: "朝食", mistakes: 0, history: [] },
+            { id: 45, en: "teacher", kana: "（ティーチャー）", ja: "先生", mistakes: 0, history: [] },
+            { id: 46, en: "father", kana: "（ファーザー）", ja: "父", mistakes: 0, history: [] },
+            { id: 47, en: "Japan", kana: "（ジャパン）", ja: "日本", mistakes: 0, history: [] },
+            { id: 48, en: "post", kana: "（ポスト）", ja: "郵便", mistakes: 0, history: [] },
+            { id: 49, en: "clock", kana: "（クロック）", ja: "時計", mistakes: 0, history: [] },
+            { id: 50, en: "world", kana: "（ワールド）", ja: "世界", mistakes: 0, history: [] },
+            { id: 51, en: "math", kana: "（マス）", ja: "算数", mistakes: 0, history: [] },
+            { id: 52, en: "mother", kana: "（マザー）", ja: "母", mistakes: 0, history: [] },
+            { id: 53, en: "restaurant", kana: "（レストラン）", ja: "レストラン", mistakes: 0, history: [] },
+            { id: 54, en: "festival", kana: "（フェスティバル）", ja: "お祭り", mistakes: 0, history: [] },
+            { id: 55, en: "teeth", kana: "（ティース）", ja: "歯", mistakes: 0, history: [] },
+            { id: 56, en: "fish", kana: "（フィッシュ）", ja: "魚", mistakes: 0, history: [] },
+            { id: 57, en: "morning", kana: "（モーニング）", ja: "朝", mistakes: 0, history: [] },
+            { id: 58, en: "egg", kana: "（エッグ）", ja: "たまご", mistakes: 0, history: [] },
+            { id: 59, en: "friend", kana: "（フレンド）", ja: "友達", mistakes: 0, history: [] },
+            { id: 60, en: "desk", kana: "（デスク）", ja: "机", mistakes: 0, history: [] },
+            { id: 61, en: "Sunday", kana: "（サンデー）", ja: "日曜日", mistakes: 0, history: [] },
+            { id: 62, en: "Monday", kana: "（マンデー）", ja: "月曜日", mistakes: 0, history: [] },
+            { id: 63, en: "Tuesday", kana: "（チューズデー）", ja: "火曜日", mistakes: 0, history: [] },
+            { id: 64, en: "Wednesday", kana: "（ウェンズデー）", ja: "水曜日", mistakes: 0, history: [] },
+            { id: 65, en: "Thursday", kana: "（サーズデー）", ja: "木曜日", mistakes: 0, history: [] },
+            { id: 66, en: "Friday", kana: "（フライデー）", ja: "金曜日", mistakes: 0, history: [] },
+            { id: 67, en: "Saturday", kana: "（サタデー）", ja: "土曜日", mistakes: 0, history: [] },
+            { id: 68, en: "red", kana: "（レッド）", ja: "赤（あか）", mistakes: 0, history: [] },
+            { id: 69, en: "blue", kana: "（ブルー）", ja: "青（あお）", mistakes: 0, history: [] },
+            { id: 70, en: "yellow", kana: "（イエロー）", ja: "黄色（きいろ）", mistakes: 0, history: [] },
+            { id: 71, en: "green", kana: "（グリーン）", ja: "緑（みどり）", mistakes: 0, history: [] },
+            { id: 72, en: "white", kana: "（ホワイト）", ja: "白（しろ）", mistakes: 0, history: [] },
+            { id: 73, en: "black", kana: "（ブラック）", ja: "黒（くろ）", mistakes: 0, history: [] },
+            { id: 74, en: "boy", kana: "（ボーイ）", ja: "男の子", mistakes: 0, history: [] },
+            { id: 75, en: "family", kana: "（ファミリー）", ja: "家族", mistakes: 0, history: [] },
+            { id: 76, en: "brother", kana: "（ブラザー）", ja: "兄・弟", mistakes: 0, history: [] },
+            { id: 77, en: "sister", kana: "（シスター）", ja: "姉・妹", mistakes: 0, history: [] },
+            { id: 78, en: "dog", kana: "（ドッグ）", ja: "犬（いぬ）", mistakes: 0, history: [] },
+            { id: 79, en: "cat", kana: "（キャット）", ja: "猫（ねこ）", mistakes: 0, history: [] },
+            { id: 80, en: "bird", kana: "（バード）", ja: "鳥（とり）", mistakes: 0, history: [] },
+            { id: 81, en: "apple", kana: "（アップル）", ja: "りんご", mistakes: 0, history: [] },
+            { id: 82, en: "water", kana: "（ウォーター）", ja: "水（みず）", mistakes: 0, history: [] },
+            { id: 83, en: "milk", kana: "（ミルク）", ja: "牛乳（ぎゅうにゅう）", mistakes: 0, history: [] },
+            { id: 84, en: "lunch", kana: "（ランチ）", ja: "昼食（ひるごはん）", mistakes: 0, history: [] },
+            { id: 85, en: "dinner", kana: "（ディナー）", ja: "夕食（ばんごはん）", mistakes: 0, history: [] },
+            { id: 86, en: "sun", kana: "（サン）", ja: "太陽（たいよう）", mistakes: 0, history: [] },
+            { id: 87, en: "moon", kana: "（ムーン）", ja: "月（つき）", mistakes: 0, history: [] },
+            { id: 88, en: "star", kana: "（スター）", ja: "星（ほし）", mistakes: 0, history: [] },
+            { id: 89, en: "chair", kana: "（チェア）", ja: "いす", mistakes: 0, history: [] },
+            { id: 90, en: "room", kana: "（ルーム）", ja: "部屋（へや）", mistakes: 0, history: [] }
         ];
 
         let wordData = [...initialWordList];
@@ -321,7 +381,7 @@
                     const parsed = JSON.parse(saved);
                     if (Array.isArray(parsed)) {
                         wordData = initialWordList.map(item => {
-                            const found = parsed.find(p => p.id === item.id);
+                            const found = parsed.find(p => (p.en ? p.en === item.en : false));
                             if (!found) return { ...item, latestResult: null };
                             const history = found.history || [];
                             const latestResult = found.latestResult || (history.length > 0 ? history[history.length - 1] : null);
@@ -351,6 +411,7 @@
                     .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
                     .map(w => ({ 
                         id: w.id, 
+                        en: w.en,
                         mistakes: w.mistakes, 
                         history: w.history,
                         latestResult: w.latestResult 
@@ -400,7 +461,7 @@
                     if (data && Array.isArray(data.words)) {
                         isSyncing = true;
                         data.words.forEach(cloudWord => {
-                            const localWord = wordData.find(w => w.id === cloudWord.id);
+                            const localWord = wordData.find(w => (cloudWord.en ? w.en === cloudWord.en : false));
                             if (localWord) {
                                 localWord.mistakes = cloudWord.mistakes || 0;
                                 localWord.history = Array.isArray(cloudWord.history) ? cloudWord.history : [];
@@ -435,6 +496,7 @@
                     .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
                     .map(w => ({
                         id: w.id,
+                        en: w.en,
                         mistakes: w.mistakes,
                         history: w.history || [],
                         latestResult: w.latestResult || null

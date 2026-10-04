@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小学生 英単語帳 (基本編)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rin: {
+                            50: '#FFF1F2',
+                            100: '#FFE4E6',
+                            200: '#FECDD3',
+                            300: '#FDA4AF',
+                            400: '#FB7185',
+                            500: '#F43F5E', // メインローズピンク
+                            600: '#E11D48',
+                            700: '#BE123C',
+                            800: '#9F1239',
+                            900: '#881337'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'M PLUS Rounded 1c', sans-serif;
+            background-color: #FFF5F7;
+        }
+        .perspective { perspective: 1000px; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .transition-transform {
+            transition-property: transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 450ms;
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <header class="bg-white shadow-sm p-4 text-center relative border-b border-rin-100">
+        <div class="inline-block px-3 py-1 bg-rin-100 text-rin-700 text-xs font-bold rounded-full mb-1">
+            🌸 りんちゃん専用 小学生英単語マスター
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">小学生 英単語帳 <span class="text-rin-600 text-lg md:text-xl font-normal">(基本編)</span></h1>
+        
+        <div class="mt-3 flex flex-wrap justify-center items-center gap-2 text-xs md:text-sm text-gray-600 bg-rin-50 p-2 rounded-xl max-w-xl mx-auto border border-rin-200">
+            <span class="font-semibold text-rin-800 flex items-center">
+                <svg class="w-4 h-4 mr-1 inline text-rin-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                同期コード:
+            </span>
+            <input type="text" id="sync-code-input" class="px-2 py-1 border border-rin-300 rounded text-center font-mono font-bold w-32 focus:outline-none focus:ring-2 focus:ring-rin-500 bg-white" placeholder="rin0826" value="rin0826" />
+            <button onclick="changeSyncCode()" class="px-3 py-1 bg-rin-500 text-white rounded-lg font-medium hover:bg-rin-600 transition-colors shadow-sm">同期設定</button>
+            <span id="sync-status" class="ml-2 text-xs font-medium text-emerald-600 flex items-center hidden">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> 同期中
+            </span>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 flex flex-col items-center max-w-3xl">
+        
+        <div class="flex flex-col md:flex-row w-full justify-between items-center mb-6 gap-4">
+            <div class="flex space-x-3">
+                <button id="tab-flashcard" class="px-5 py-2.5 bg-rin-500 text-white rounded-xl shadow-sm font-bold focus:outline-none focus:ring-2 focus:ring-rin-400 transition-all hover:bg-rin-600" onclick="switchTab('flashcard')">単語帳モード</button>
+                <button id="tab-list" class="px-5 py-2.5 bg-white text-gray-700 border border-gray-200 rounded-xl shadow-sm font-bold hover:bg-rin-50 hover:text-rin-700 focus:outline-none focus:ring-2 focus:ring-rin-300 transition-all" onclick="switchTab('list')">間違えた単語一覧</button>
+            </div>
+            <button onclick="initiateReset()" class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl shadow-sm font-semibold hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center transition-colors text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                履歴リセット
+            </button>
+        </div>
+
+        <div id="flashcard-area" class="w-full flex flex-col items-center">
+            
+            <div class="flex justify-center gap-2 mb-4 bg-rin-100 p-1.5 rounded-full shadow-inner">
+                <button id="mode-all-btn" class="px-6 py-2 rounded-full font-bold text-sm bg-white text-rin-700 shadow-sm transition-all duration-200" onclick="setMode('all')">全問モード</button>
+                <button id="mode-review-btn" class="px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rin-700 transition-all duration-200" onclick="setMode('review')">
+                    復習モード <span id="review-count-badge" class="ml-1 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white hidden">0問</span>
+                </button>
+            </div>
+
+            <div class="mb-4 text-gray-500 font-medium text-sm flex flex-wrap justify-center items-center gap-3 md:gap-4 bg-white/80 backdrop-blur-sm px-5 py-2 rounded-full shadow-sm border border-rin-100">
+                <span id="round-badge" class="bg-rin-200 text-rin-900 text-xs px-2.5 py-0.5 rounded-full font-bold">第 <span id="round-number-display">1</span> 周目</span>
+                <span>出題: <span id="current-index-display" class="font-bold text-rin-700">1</span> / <span id="total-words-display">0</span>問</span>
+                <span class="border-l border-gray-300 pl-3">連続: <span id="session-count-display" class="font-bold text-rin-600">0</span>問</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-center w-full max-w-2xl gap-6">
+                
+                <div class="relative w-full max-w-md aspect-[4/3] perspective cursor-pointer select-none" id="flashcard" onclick="flipCard()">
+                    <div id="card-inner" class="w-full h-full relative preserve-3d transition-transform">
+                        
+                        <!-- 表面 -->
+                        <div class="absolute w-full h-full bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center backface-hidden border-2 border-rin-100 p-6 hover:border-rin-300 transition-colors">
+                            <div id="front-mistake-count" class="absolute top-4 right-4 text-rose-500 font-bold bg-rose-50 px-2.5 py-1 rounded-full text-xs hidden border border-rose-100">
+                                × <span id="front-mistake-number">0</span>
+                            </div>
+                            <h2 id="word-en" class="text-4xl md:text-5xl font-bold mb-3 text-center break-all text-gray-800 tracking-tight"></h2>
+                            <p id="word-kana" class="text-lg md:text-xl text-rin-400 text-center font-medium"></p>
+                        </div>
+
+                        <!-- 裏面 -->
+                        <div class="absolute w-full h-full bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center backface-hidden rotate-y-180 border-2 border-rin-300 p-6 bg-gradient-to-b from-white to-rin-50/40">
+                            <div id="back-mistake-count" class="absolute top-4 right-4 text-rose-500 font-bold bg-rose-50 px-2.5 py-1 rounded-full text-xs hidden border border-rose-100">
+                                × <span id="back-mistake-number">0</span>
+                            </div>
+                            <h3 class="text-xs font-bold text-rin-500 mb-3 uppercase tracking-wider bg-rin-100 px-3 py-1 rounded-full">日本語の意味</h3>
+                            <p id="word-ja" class="text-2xl md:text-3xl font-bold text-center text-gray-800 leading-relaxed px-4"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-row md:flex-col gap-4 justify-center items-center shrink-0 w-full md:w-auto">
+                    <button id="flip-btn" onclick="flipCard()" class="w-16 h-16 md:w-20 md:h-20 bg-white border-2 border-rin-200 rounded-2xl flex items-center justify-center shadow-md hover:bg-rin-50 hover:border-rin-400 focus:outline-none focus:ring-4 focus:ring-rin-200 text-rin-600 transition-all" title="めくる (Enter)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </button>
+                    
+                    <div id="judgment-controls" class="flex gap-4 md:flex-col hidden absolute md:relative z-10 md:z-auto">
+                        <button onclick="judge(true, event)" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-emerald-600 text-4xl font-bold shadow-md hover:bg-emerald-100 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-200 flex items-center justify-center transition-all" title="正解">
+                            〇
+                        </button>
+                        <button onclick="judge(false, event)" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-600 text-4xl font-bold shadow-md hover:bg-rose-100 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-rose-200 flex items-center justify-center transition-all" title="不正解">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="mt-6 text-xs md:text-sm text-gray-400 font-medium">※カードをタップ、または [Enter] キーでめくります</p>
+        </div>
+
+        <div id="list-area" class="w-full hidden flex-col items-center">
+            <h2 class="text-xl font-bold mb-3 text-gray-800">単語学習履歴一覧</h2>
+            <div class="flex gap-2 mb-4 bg-rin-100 p-1 rounded-full shadow-inner">
+                <button id="filter-review-btn" class="px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rin-700 shadow-sm transition-all" onclick="setListFilter('review')">要復習（直近×）のみ</button>
+                <button id="filter-all-btn" class="px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rin-700 transition-all" onclick="setListFilter('all')">全履歴（累計ミスあり）</button>
+            </div>
+            <div class="w-full overflow-x-auto bg-white rounded-2xl shadow-sm border border-rin-100">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th class="px-5 py-4 border-b-2 border-rin-100 bg-rin-50 text-left text-xs font-bold text-rin-800 uppercase tracking-wider cursor-pointer hover:bg-rin-100 transition-colors" onclick="sortTable('en')">
+                                単語 <span id="sort-icon-en" class="ml-1 text-gray-400"></span>
+                            </th>
+                            <th class="px-5 py-4 border-b-2 border-rin-100 bg-rin-50 text-left text-xs font-bold text-rin-800 uppercase tracking-wider cursor-pointer hover:bg-rin-100 transition-colors" onclick="sortTable('ja')">
+                                意味 <span id="sort-icon-ja" class="ml-1 text-gray-400"></span>
+                            </th>
+                            <th class="px-5 py-4 border-b-2 border-rin-100 bg-rin-50 text-left text-xs font-bold text-rin-800 uppercase tracking-wider cursor-pointer hover:bg-rin-100 transition-colors" onclick="sortTable('mistakes')">
+                                履歴 (直近5回) <span id="sort-icon-mistakes" class="ml-1 text-rin-600">▼</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="mistake-list-body">
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-mistakes-msg" class="mt-8 text-rin-700 font-bold bg-rin-50 px-6 py-4 rounded-2xl border border-rin-200 hidden shadow-sm text-center">
+                ✨ ×がついた単語はありません！とっても素晴らしい！🎉
+            </div>
+        </div>
+
+        <div id="unified-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 hidden backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 w-11/12 max-w-sm transform transition-all scale-100 border border-rin-100">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3 text-center hidden"></h3>
+                <p id="modal-message" class="text-base font-medium text-gray-600 mb-6 text-center leading-relaxed"></p>
+                <div id="modal-input-container" class="hidden mb-6">
+                    <input type="text" id="modal-input" class="w-full px-3 py-2 border-2 border-rin-300 rounded-xl text-center font-mono font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-rin-500" placeholder="同期コードを入力" />
+                    <p id="modal-input-error" class="text-xs text-rose-500 font-bold mt-2 text-center hidden"></p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <button id="modal-btn-primary" class="w-full py-3 bg-rin-500 text-white rounded-xl hover:bg-rin-600 focus:outline-none focus:ring-4 focus:ring-rin-300 font-bold transition-all text-lg shadow-sm">
+                        OK
+                    </button>
+                    <button id="modal-btn-secondary" class="w-full py-3 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 focus:outline-none font-semibold transition-all hidden">
+                        キャンセル
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Firebase SDK (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForVercelIntegration00000",
+            authDomain: "english-app-suzu.firebaseapp.com",
+            projectId: "english-app-suzu",
+            storageBucket: "english-app-suzu.firebasestorage.app",
+            messagingSenderId: "123456789012",
+            appId: "flashcards-rin-elem-30"
+        };
+
+        let app, auth, db;
+
+        // 小学生向け基本英単語（30問サンプル：後からいつでもテキストで差し替え可能）
+        const initialWordList = [
+            { id: 1, en: "apple", kana: "（アップル）", ja: "りんご", mistakes: 0, history: [] },
+            { id: 2, en: "dog", kana: "（ドッグ）", ja: "犬（いぬ）", mistakes: 0, history: [] },
+            { id: 3, en: "cat", kana: "（キャット）", ja: "猫（ねこ）", mistakes: 0, history: [] },
+            { id: 4, en: "book", kana: "（ブック）", ja: "本（ほん）", mistakes: 0, history: [] },
+            { id: 5, en: "pen", kana: "（ペン）", ja: "ペン", mistakes: 0, history: [] },
+            { id: 6, en: "desk", kana: "（デスク）", ja: "机（つくえ）", mistakes: 0, history: [] },
+            { id: 7, en: "chair", kana: "（チェア）", ja: "いす", mistakes: 0, history: [] },
+            { id: 8, en: "friend", kana: "（フレンド）", ja: "友達（ともだち）", mistakes: 0, history: [] },
+            { id: 9, en: "teacher", kana: "（ティーチャー）", ja: "先生（せんせい）", mistakes: 0, history: [] },
+            { id: 10, en: "school", kana: "（スクール）", ja: "学校（がっこう）", mistakes: 0, history: [] },
+            { id: 11, en: "red", kana: "（レッド）", ja: "赤（あか）", mistakes: 0, history: [] },
+            { id: 12, en: "blue", kana: "（ブルー）", ja: "青（あお）", mistakes: 0, history: [] },
+            { id: 13, en: "yellow", kana: "（イエロー）", ja: "黄色（きいろ）", mistakes: 0, history: [] },
+            { id: 14, en: "green", kana: "（グリーン）", ja: "緑（みどり）", mistakes: 0, history: [] },
+            { id: 15, en: "white", kana: "（ホワイト）", ja: "白（しろ）", mistakes: 0, history: [] },
+            { id: 16, en: "one", kana: "（ワン）", ja: "1（ひとつ）", mistakes: 0, history: [] },
+            { id: 17, en: "two", kana: "（ツー）", ja: "2（ふたつ）", mistakes: 0, history: [] },
+            { id: 18, en: "three", kana: "（スリー）", ja: "3（みっつ）", mistakes: 0, history: [] },
+            { id: 19, en: "four", kana: "（フォー）", ja: "4（よっつ）", mistakes: 0, history: [] },
+            { id: 20, en: "five", kana: "（ファイブ）", ja: "5（いつつ）", mistakes: 0, history: [] },
+            { id: 21, en: "sun", kana: "（サン）", ja: "太陽（たいよう）", mistakes: 0, history: [] },
+            { id: 22, en: "moon", kana: "（ムーン）", ja: "月（つき）", mistakes: 0, history: [] },
+            { id: 23, en: "star", kana: "（スター）", ja: "星（ほし）", mistakes: 0, history: [] },
+            { id: 24, en: "water", kana: "（ウォーター）", ja: "水（みず）", mistakes: 0, history: [] },
+            { id: 25, en: "milk", kana: "（ミルク）", ja: "牛乳（ぎゅうにゅう）", mistakes: 0, history: [] },
+            { id: 26, en: "hello", kana: "（ハロー）", ja: "こんにちは", mistakes: 0, history: [] },
+            { id: 27, en: "thank you", kana: "（サンキュー）", ja: "ありがとう", mistakes: 0, history: [] },
+            { id: 28, en: "good morning", kana: "（グッドモーニング）", ja: "おはよう", mistakes: 0, history: [] },
+            { id: 29, en: "goodbye", kana: "（グッドバイ）", ja: "さようなら", mistakes: 0, history: [] },
+            { id: 30, en: "play", kana: "（プレイ）", ja: "遊ぶ（あそぶ）", mistakes: 0, history: [] }
+        ];
+
+        let wordData = [...initialWordList];
+        
+        let learningMode = 'all'; 
+        
+        let orderStates = {
+            all: { indices: [], currentIndex: 0 },
+            review: { indices: [], currentIndex: 0 }
+        };
+        
+        let sessionCount = 0; 
+        const SESSION_LIMIT = 30; // 30問で区切る
+        let currentRound = 1;
+        let listFilter = 'review'; // 'review' (要復習のみ) or 'all' (累計すべて)
+
+        let isFlipped = false;
+        let currentSort = { key: 'mistakes', order: 'desc' };
+        let unsubscribe = null;
+        let syncCode = localStorage.getItem('rin_flashcards_sync_code') || 'rin0826';
+        let isSyncing = false; 
+
+        // 最新の回答判定を取得（'〇' | '×' | null）
+        function getWordLatestResult(word) {
+            if (word.latestResult) return word.latestResult;
+            if (word.history && word.history.length > 0) {
+                return word.history[word.history.length - 1];
+            }
+            return null;
+        }
+
+        // 現在要復習（最新が×）の単語一覧を取得
+        function getReviewWords() {
+            return wordData.filter(w => getWordLatestResult(w) === '×');
+        }
+
+        // 復習モードのバッジ更新
+        function updateReviewBadge() {
+            const count = getReviewWords().length;
+            const badge = document.getElementById('review-count-badge');
+            if (!badge) return;
+            if (count > 0) {
+                badge.textContent = `${count}問`;
+                badge.classList.remove('hidden');
+            } else {
+                badge.textContent = '0問';
+                badge.classList.add('hidden');
+            }
+        }
+
+        function saveRound() {
+            try {
+                localStorage.setItem('rin_current_round_' + syncCode, currentRound.toString());
+                const roundEl = document.getElementById('round-number-display');
+                if (roundEl) roundEl.textContent = currentRound;
+            } catch(e) {}
+        }
+
+        // DOM Elements
+        const cardInner = document.getElementById('card-inner');
+        const wordEnEl = document.getElementById('word-en');
+        const wordKanaEl = document.getElementById('word-kana');
+        const wordJaEl = document.getElementById('word-ja');
+        const currentIndexDisplay = document.getElementById('current-index-display');
+        const totalWordsDisplay = document.getElementById('total-words-display');
+        const sessionCountDisplay = document.getElementById('session-count-display');
+        const judgmentControlsEl = document.getElementById('judgment-controls');
+        
+        const frontMistakeCountEl = document.getElementById('front-mistake-count');
+        const frontMistakeNumberEl = document.getElementById('front-mistake-number');
+        const backMistakeCountEl = document.getElementById('back-mistake-count');
+        const backMistakeNumberEl = document.getElementById('back-mistake-number');
+
+        function loadSavedLocalProgress() {
+            try {
+                const saved = localStorage.getItem('rin_progress_' + syncCode);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        wordData = initialWordList.map(item => {
+                            const found = parsed.find(p => p.id === item.id);
+                            if (!found) return { ...item, latestResult: null };
+                            const history = found.history || [];
+                            const latestResult = found.latestResult || (history.length > 0 ? history[history.length - 1] : null);
+                            return {
+                                ...item,
+                                mistakes: found.mistakes || 0,
+                                history: history,
+                                latestResult: latestResult
+                            };
+                        });
+                    }
+                }
+                const savedRound = localStorage.getItem('rin_current_round_' + syncCode);
+                if (savedRound) {
+                    currentRound = parseInt(savedRound, 10) || 1;
+                }
+                saveRound();
+                updateReviewBadge();
+            } catch (e) {
+                console.warn("Failed to load local storage progress:", e);
+            }
+        }
+
+        function saveLocalProgress() {
+            try {
+                const progress = wordData
+                    .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
+                    .map(w => ({ 
+                        id: w.id, 
+                        mistakes: w.mistakes, 
+                        history: w.history,
+                        latestResult: w.latestResult 
+                    }));
+                localStorage.setItem('rin_progress_' + syncCode, JSON.stringify(progress));
+                localStorage.setItem('rin_current_round_' + syncCode, currentRound.toString());
+            } catch (e) {
+                console.warn("Failed to save local progress:", e);
+            }
+        }
+
+        async function setupCloudSync() {
+            if (!syncCode) {
+                const statusEl = document.getElementById('sync-status');
+                if (statusEl) statusEl.classList.add('hidden');
+                return;
+            }
+            try {
+                if (!app) {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+                }
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                subscribeToSyncData();
+            } catch (err) {
+                console.warn("Cloud sync init failed, running in pure local mode:", err);
+            }
+        }
+
+        function subscribeToSyncData() {
+            if (!syncCode || !db) return;
+            if (unsubscribe) unsubscribe();
+
+            const statusEl = document.getElementById('sync-status');
+            const docRef = doc(db, 'flashcard_progress_rin', syncCode);
+
+            unsubscribe = onSnapshot(docRef, (docSnap) => {
+                if (statusEl) statusEl.classList.remove('hidden');
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data && Array.isArray(data.words)) {
+                        isSyncing = true;
+                        data.words.forEach(cloudWord => {
+                            const localWord = wordData.find(w => w.id === cloudWord.id);
+                            if (localWord) {
+                                localWord.mistakes = cloudWord.mistakes || 0;
+                                localWord.history = Array.isArray(cloudWord.history) ? cloudWord.history : [];
+                                localWord.latestResult = cloudWord.latestResult || (localWord.history.length > 0 ? localWord.history[localWord.history.length - 1] : null);
+                            }
+                        });
+                        if (typeof data.currentRound === 'number') {
+                            currentRound = data.currentRound;
+                        }
+                        saveLocalProgress();
+                        saveRound();
+                        updateReviewBadge();
+                        showCard();
+                        if (!document.getElementById('list-area').classList.contains('hidden')) {
+                            updateList();
+                        }
+                        isSyncing = false;
+                    }
+                }
+            }, (error) => {
+                console.warn("Snapshot listen failed:", error);
+            });
+        }
+
+        async function saveCloudData() {
+            saveLocalProgress();
+            if (!syncCode || !db || isSyncing) return;
+
+            try {
+                const docRef = doc(db, 'flashcard_progress_rin', syncCode);
+                const wordsToSave = wordData
+                    .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult)
+                    .map(w => ({
+                        id: w.id,
+                        mistakes: w.mistakes,
+                        history: w.history || [],
+                        latestResult: w.latestResult || null
+                    }));
+
+                await setDoc(docRef, {
+                    words: wordsToSave,
+                    currentRound: currentRound,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            } catch (err) {
+                console.warn("Cloud save failed, local data kept safely:", err);
+            }
+        }
+
+        window.changeSyncCode = function() {
+            const inputVal = document.getElementById('sync-code-input').value.trim();
+            if (!inputVal) {
+                syncCode = '';
+                localStorage.removeItem('rin_flashcards_sync_code');
+                if (unsubscribe) unsubscribe();
+                const statusEl = document.getElementById('sync-status');
+                if (statusEl) statusEl.classList.add('hidden');
+                showModal('alert', '同期設定を空欄（未設定）にしました。\n現在は端末内のローカル保存で学習できます。', 'OK', closeModal);
+                return;
+            }
+            syncCode = inputVal;
+            localStorage.setItem('rin_flashcards_sync_code', syncCode);
+            loadSavedLocalProgress();
+            initShuffle('all');
+            initShuffle('review');
+            showCard();
+            updateList();
+            setupCloudSync();
+            showModal('alert', `合言葉「${syncCode}」で同期を設定しました！`, 'OK', closeModal);
+        };
+
+        function initShuffle(mode) {
+            let indices = [];
+            if (mode === 'all') {
+                indices = Array.from({ length: wordData.length }, (_, i) => i);
+            } else if (mode === 'review') {
+                wordData.forEach((w, i) => { 
+                    if (getWordLatestResult(w) === '×') indices.push(i); 
+                });
+            }
+
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            orderStates[mode].indices = indices;
+            orderStates[mode].currentIndex = 0;
+        }
+
+        function updateModeUI() {
+            const btnAll = document.getElementById('mode-all-btn');
+            const btnReview = document.getElementById('mode-review-btn');
+            const roundBadge = document.getElementById('round-badge');
+            
+            if (learningMode === 'all') {
+                btnAll.className = "px-6 py-2 rounded-full font-bold text-sm bg-white text-rin-700 shadow-sm transition-all duration-200";
+                btnReview.className = "px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rin-700 transition-all duration-200";
+                if (roundBadge) roundBadge.classList.remove('hidden');
+            } else {
+                btnReview.className = "px-6 py-2 rounded-full font-bold text-sm bg-white text-rose-600 shadow-sm transition-all duration-200";
+                btnAll.className = "px-6 py-2 rounded-full font-bold text-sm text-gray-500 hover:text-rin-700 transition-all duration-200";
+                if (roundBadge) roundBadge.classList.add('hidden');
+            }
+            updateReviewBadge();
+        }
+
+        window.setMode = function(mode) {
+            if (mode === 'review') {
+                const reviewWords = getReviewWords();
+                if (reviewWords.length === 0) {
+                    showModal('alert', '現在、要復習（直近×）の単語はありません！\nすべて正解済みです。りんちゃん素晴らしい！🌸', '全問モードを続ける', closeModal);
+                    return;
+                }
+            }
+            
+            learningMode = mode;
+            updateModeUI();
+            initShuffle(mode);
+            showCard();
+        };
+
+        function showCard() {
+            const state = orderStates[learningMode];
+            if (!state || state.indices.length === 0) {
+                if (learningMode === 'review') {
+                    initShuffle('review');
+                    if (orderStates.review.indices.length === 0) {
+                        setMode('all');
+                        return;
+                    }
+                } else {
+                    initShuffle('all');
+                }
+            }
+            if (state.indices.length === 0) return;
+            
+            const realIndex = state.indices[state.currentIndex];
+            const word = wordData[realIndex];
+            if (!word) return;
+            
+            wordEnEl.textContent = word.en;
+            wordKanaEl.textContent = word.kana;
+            wordJaEl.textContent = word.ja;
+            
+            if (word.en.length > 15) {
+                wordEnEl.classList.replace('text-4xl', 'text-2xl');
+                wordEnEl.classList.replace('md:text-5xl', 'md:text-3xl');
+            } else {
+                wordEnEl.classList.replace('text-2xl', 'text-4xl');
+                wordEnEl.classList.replace('md:text-3xl', 'md:text-5xl');
+            }
+
+            currentIndexDisplay.textContent = state.currentIndex + 1;
+            totalWordsDisplay.textContent = state.indices.length;
+            sessionCountDisplay.textContent = sessionCount;
+
+            const isCurrentMistake = getWordLatestResult(word) === '×';
+            if (word.mistakes > 0 || isCurrentMistake) {
+                frontMistakeNumberEl.textContent = word.mistakes;
+                backMistakeNumberEl.textContent = word.mistakes;
+                frontMistakeCountEl.classList.remove('hidden');
+                backMistakeCountEl.classList.remove('hidden');
+            } else {
+                frontMistakeCountEl.classList.add('hidden');
+                backMistakeCountEl.classList.add('hidden');
+            }
+
+            if (isFlipped) {
+                cardInner.classList.remove('rotate-y-180');
+                isFlipped = false;
+            }
+            judgmentControlsEl.classList.add('hidden');
+            document.getElementById('flip-btn').classList.remove('hidden');
+        }
+
+        window.flipCard = function() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardInner.classList.add('rotate-y-180');
+                document.getElementById('flip-btn').classList.add('hidden');
+                setTimeout(() => {
+                    judgmentControlsEl.classList.remove('hidden');
+                }, 150);
+            }
+        };
+
+        window.judge = function(isCorrect, event) {
+            if (event) event.stopPropagation(); 
+
+            const state = orderStates[learningMode];
+            if (!state || state.indices.length === 0) return;
+
+            const realIndex = state.indices[state.currentIndex];
+            const word = wordData[realIndex];
+            if (!word) return;
+            
+            // 直近5回分の履歴のみ保持
+            const historyMark = isCorrect ? '〇' : '×';
+            if (!word.history) word.history = [];
+            word.history.push(historyMark);
+            if (word.history.length > 5) {
+                word.history.shift();
+            }
+
+            // 直近の回答結果を更新（克服判定用）
+            word.latestResult = historyMark;
+
+            if (!isCorrect) {
+                word.mistakes = (word.mistakes || 0) + 1;
+            }
+
+            sessionCount++;
+            updateReviewBadge();
+            
+            state.currentIndex++;
+            const isModeFinished = state.currentIndex >= state.indices.length;
+
+            saveCloudData();
+
+            if (isModeFinished) {
+                if (learningMode === 'all') {
+                    // === 周回完走時の節目イベント（単語数動的対応） ===
+                    const reviewWords = getReviewWords();
+                    const mistakeCount = reviewWords.length;
+                    const correctCount = wordData.length - mistakeCount;
+                    const finishedRound = currentRound;
+
+                    if (mistakeCount > 0) {
+                        showModal('round_clear', 
+                            `🏆 第${finishedRound}周目をクリアしました！（全${wordData.length}問）\n\n・正解（〇）: ${correctCount}問\n・要復習（×）: ${mistakeCount}問\n\n今周で間違えた${mistakeCount}問だけをすぐに復習しますか？`,
+                            `間違えた${mistakeCount}問を復習する`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                setMode('review');
+                            },
+                            `第${finishedRound + 1}周へ進む`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                initShuffle('all');
+                                showCard();
+                            }
+                        );
+                    } else {
+                        showModal('round_perfect',
+                            `🌸✨ 第${finishedRound}周目 パーフェクト達成！！ ✨🌸\n\n全${wordData.length}問すべて正解しました！\nりんちゃん、素晴らしい実力です！`,
+                            `第${finishedRound + 1}周へ進む`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                currentRound++;
+                                saveRound();
+                                initShuffle('all');
+                                showCard();
+                            },
+                            `一覧を見る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                switchTab('list');
+                            }
+                        );
+                    }
+                    return;
+                } else if (learningMode === 'review') {
+                    // === 復習モード完走時 ===
+                    const remainingMistakes = getReviewWords().length;
+                    if (remainingMistakes === 0) {
+                        showModal('review_complete',
+                            `🌸 克服完了！！\n\n間違えた問題をすべて正解（〇）にできました！\n苦手単語ゼロ達成です！りんちゃん素晴らしい！`,
+                            `全問モードに戻る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                setMode('all');
+                            }
+                        );
+                    } else {
+                        showModal('review_continue',
+                            `復習モード1周終了！\nまだ苦手な問題が ${remainingMistakes}問 残っています。\nもう一度復習しますか？`,
+                            `残りの${remainingMistakes}問を復習する`,
+                            () => {
+                                closeModal();
+                                initShuffle('review');
+                                showCard();
+                            },
+                            `全問モードに戻る`,
+                            () => {
+                                closeModal();
+                                sessionCount = 0;
+                                setMode('all');
+                            }
+                        );
+                    }
+                    return;
+                }
+            }
+
+            // 30問区切り
+            if (sessionCount >= SESSION_LIMIT) {
+                showModal('session', `🎉 ${SESSION_LIMIT}問クリアしました！\nりんちゃん、お疲れ様！少し休憩しますか？`, 'このまま続ける', () => {
+                    sessionCount = 0;
+                    closeModal();
+                    showCard();
+                }, '休んで一覧を見る', () => {
+                    sessionCount = 0;
+                    closeModal();
+                    switchTab('list');
+                });
+            } else {
+                showCard();
+            }
+        };
+
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('flashcard-area').classList.contains('hidden')) return;
+            if (document.getElementById('unified-modal').classList.contains('hidden') === false) return;
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (isFlipped) return; 
+                flipCard();
+            }
+        });
+
+        window.switchTab = function(tabId) {
+            const flashcardArea = document.getElementById('flashcard-area');
+            const listArea = document.getElementById('list-area');
+            const tabFlashcard = document.getElementById('tab-flashcard');
+            const tabList = document.getElementById('tab-list');
+
+            if (tabId === 'flashcard') {
+                flashcardArea.classList.remove('hidden');
+                flashcardArea.classList.add('flex');
+                listArea.classList.add('hidden');
+                listArea.classList.remove('flex');
+                
+                tabFlashcard.classList.replace('bg-white', 'bg-rin-500');
+                tabFlashcard.classList.replace('text-gray-700', 'text-white');
+                tabFlashcard.classList.remove('border', 'border-gray-200');
+                tabList.classList.replace('bg-rin-500', 'bg-white');
+                tabList.classList.replace('text-white', 'text-gray-700');
+                tabList.classList.add('border', 'border-gray-200');
+                showCard();
+            } else {
+                flashcardArea.classList.add('hidden');
+                flashcardArea.classList.remove('flex');
+                listArea.classList.remove('hidden');
+                listArea.classList.add('flex');
+
+                tabList.classList.replace('bg-white', 'bg-rin-500');
+                tabList.classList.replace('text-gray-700', 'text-white');
+                tabList.classList.remove('border', 'border-gray-200');
+                tabFlashcard.classList.replace('bg-rin-500', 'bg-white');
+                tabFlashcard.classList.replace('text-white', 'text-gray-700');
+                tabFlashcard.classList.add('border', 'border-gray-200');
+                
+                updateList();
+            }
+        };
+
+        window.setListFilter = function(filter) {
+            listFilter = filter;
+            const btnReview = document.getElementById('filter-review-btn');
+            const btnAll = document.getElementById('filter-all-btn');
+            if (btnReview && btnAll) {
+                if (filter === 'review') {
+                    btnReview.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rin-700 shadow-sm transition-all";
+                    btnAll.className = "px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rin-700 transition-all";
+                } else {
+                    btnAll.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-white text-rin-700 shadow-sm transition-all";
+                    btnReview.className = "px-4 py-1.5 rounded-full text-xs font-bold text-gray-500 hover:text-rin-700 transition-all";
+                }
+            }
+            updateList();
+        };
+
+        function updateList() {
+            const tbody = document.getElementById('mistake-list-body');
+            const noMsg = document.getElementById('no-mistakes-msg');
+            tbody.innerHTML = '';
+
+            let displayWords = [];
+            if (listFilter === 'review') {
+                displayWords = wordData.filter(word => getWordLatestResult(word) === '×');
+            } else {
+                displayWords = wordData.filter(word => word.mistakes > 0 || (word.history && word.history.length > 0));
+            }
+
+            if (displayWords.length === 0) {
+                document.querySelector('table').classList.add('hidden');
+                noMsg.classList.remove('hidden');
+                if (listFilter === 'review') {
+                    noMsg.innerHTML = '✨ 現在、要復習（直近×）の単語はありません！<br>すべて克服済みです。素晴らしい！🌸';
+                } else {
+                    noMsg.innerHTML = 'まだ履歴のある単語はありません。どんどん問題を解いていきましょう！📚';
+                }
+                return;
+            } else {
+                document.querySelector('table').classList.remove('hidden');
+                noMsg.classList.add('hidden');
+            }
+
+            displayWords.sort((a, b) => {
+                let valA = a[currentSort.key];
+                let valB = b[currentSort.key];
+                
+                if (currentSort.key === 'mistakes') {
+                    return currentSort.order === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    if (valA < valB) return currentSort.order === 'asc' ? -1 : 1;
+                    if (valA > valB) return currentSort.order === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+
+            ['en', 'ja', 'mistakes'].forEach(key => {
+                const el = document.getElementById('sort-icon-' + key);
+                if (el) el.textContent = '';
+            });
+            const activeSortEl = document.getElementById('sort-icon-' + currentSort.key);
+            if (activeSortEl) {
+                activeSortEl.textContent = currentSort.order === 'asc' ? '▲' : '▼';
+            }
+
+            displayWords.forEach(word => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-rin-100 hover:bg-rin-50/50 transition-colors";
+                
+                const isCurrentMistake = getWordLatestResult(word) === '×';
+                const statusBadge = isCurrentMistake
+                    ? '<span class="bg-rose-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm inline-block">要復習 (×)</span>'
+                    : '<span class="bg-emerald-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm inline-block">克服済み (〇)</span>';
+
+                const historyMarks = (word.history || []).map(mark => 
+                    mark === '〇' ? '<span class="text-emerald-500 font-bold mx-1">〇</span>' : '<span class="text-rose-500 font-bold mx-1">×</span>'
+                ).join('');
+
+                tr.innerHTML = `
+                    <td class="px-5 py-4 text-sm font-bold text-gray-800">
+                        <div class="flex items-center gap-2">
+                            <span>${word.en}</span>
+                            <span class="text-xs font-normal text-rin-400">${word.kana}</span>
+                            ${statusBadge}
+                        </div>
+                    </td>
+                    <td class="px-5 py-4 text-sm text-gray-600">${word.ja}</td>
+                    <td class="px-5 py-4 text-sm">
+                        <div class="font-bold text-gray-700 mb-1">通算ミス: <span class="text-rose-500 font-bold">${word.mistakes}回</span></div>
+                        <div class="text-xs bg-rin-50 px-2 py-1 rounded-lg inline-block border border-rin-200">
+                            直近: ${historyMarks || '<span class="text-gray-400">記録なし</span>'}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.sortTable = function(key) {
+            if (currentSort.key === key) {
+                currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.key = key;
+                currentSort.order = key === 'mistakes' ? 'desc' : 'asc';
+            }
+            updateList();
+        };
+
+        function showModal(type, message, btn1Text, btn1Action, btn2Text = null, btn2Action = null) {
+            const modal = document.getElementById('unified-modal');
+            const titleEl = document.getElementById('modal-title');
+            const msgEl = document.getElementById('modal-message');
+            const inputContainer = document.getElementById('modal-input-container');
+            const btn1 = document.getElementById('modal-btn-primary');
+            const btn2 = document.getElementById('modal-btn-secondary');
+            
+            titleEl.classList.add('hidden');
+            inputContainer.classList.add('hidden');
+            msgEl.innerHTML = message.replace(/\n/g, '<br>');
+            
+            btn1.textContent = btn1Text;
+            btn1.onclick = btn1Action;
+            
+            if (btn2Text) {
+                btn2.textContent = btn2Text;
+                btn2.classList.remove('hidden');
+                btn2.onclick = btn2Action;
+            } else {
+                btn2.classList.add('hidden');
+            }
+            
+            if (type === 'danger') {
+                btn1.className = "w-full py-3 bg-rose-600 text-white rounded-xl hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-300 font-bold transition-all text-lg shadow-sm";
+            } else {
+                btn1.className = "w-full py-3 bg-rin-500 text-white rounded-xl hover:bg-rin-600 focus:outline-none focus:ring-4 focus:ring-rin-300 font-bold transition-all text-lg shadow-sm";
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function showInputModal(type, title, message, placeholder, btn1Text, onSubmit, btn2Text = null, btn2Action = null) {
+            const modal = document.getElementById('unified-modal');
+            const titleEl = document.getElementById('modal-title');
+            const msgEl = document.getElementById('modal-message');
+            const inputContainer = document.getElementById('modal-input-container');
+            const inputEl = document.getElementById('modal-input');
+            const errorEl = document.getElementById('modal-input-error');
+            const btn1 = document.getElementById('modal-btn-primary');
+            const btn2 = document.getElementById('modal-btn-secondary');
+
+            titleEl.textContent = title;
+            titleEl.classList.remove('hidden');
+            msgEl.innerHTML = message.replace(/\n/g, '<br>');
+            
+            inputEl.value = '';
+            inputEl.placeholder = placeholder;
+            errorEl.textContent = '';
+            errorEl.classList.add('hidden');
+            inputContainer.classList.remove('hidden');
+
+            btn1.textContent = btn1Text;
+            btn1.onclick = () => {
+                const val = inputEl.value.trim();
+                const err = onSubmit(val);
+                if (err) {
+                    errorEl.textContent = err;
+                    errorEl.classList.remove('hidden');
+                } else {
+                    closeModal();
+                }
+            };
+
+            if (btn2Text) {
+                btn2.textContent = btn2Text;
+                btn2.classList.remove('hidden');
+                btn2.onclick = btn2Action;
+            } else {
+                btn2.classList.add('hidden');
+            }
+
+            if (type === 'danger') {
+                btn1.className = "w-full py-3 bg-rose-600 text-white rounded-xl hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-300 font-bold transition-all text-lg shadow-sm";
+            } else {
+                btn1.className = "w-full py-3 bg-rin-500 text-white rounded-xl hover:bg-rin-600 focus:outline-none focus:ring-4 focus:ring-rin-300 font-bold transition-all text-lg shadow-sm";
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => inputEl.focus(), 100);
+        }
+
+        window.closeModal = function() {
+            document.getElementById('unified-modal').classList.add('hidden');
+            const inputContainer = document.getElementById('modal-input-container');
+            if (inputContainer) inputContainer.classList.add('hidden');
+        };
+
+        window.initiateReset = function() {
+            // 同期コードが未設定（空欄）の場合はリセット不可
+            if (!syncCode) {
+                showModal('alert', '⚠️ 同期コード（合言葉）が入力・設定されていません。\n子供の誤消去を防ぐため、同期コードが設定されている時のみ履歴をリセットできます。\n画面上部で同期コードを設定してから実行してください。', 'OK', closeModal);
+                return;
+            }
+
+            // 同期コードが設定されている場合：合言葉の再確認モーダルを表示
+            showInputModal(
+                'danger',
+                '履歴のリセット（保護者確認）',
+                'すべての単語の正誤履歴をリセットします。\n実行するには、設定中の同期コード（合言葉）を入力してください。',
+                '合言葉を入力',
+                'リセットを実行する',
+                (inputVal) => {
+                    if (inputVal !== syncCode) {
+                        return '⚠️ 同期コードが一致しません。';
+                    }
+                    executeReset();
+                    showModal('alert', '✨ すべての正誤履歴をリセットしました。', 'OK', closeModal);
+                    return null; // 成功
+                },
+                'キャンセル',
+                closeModal
+            );
+        };
+
+        function executeReset() {
+            wordData.forEach(word => {
+                word.mistakes = 0;
+                word.history = [];
+                word.latestResult = null;
+            });
+            sessionCount = 0;
+            currentRound = 1;
+            saveRound();
+            updateReviewBadge();
+            learningMode = 'all';
+            updateModeUI();
+            initShuffle('all');
+            initShuffle('review');
+            saveCloudData();
+            showCard();
+            if(!document.getElementById('list-area').classList.contains('hidden')){
+                updateList();
+            }
+        }
+
+        // --- 確実な即時初期化 ---
+        function startApp() {
+            document.getElementById('sync-code-input').value = syncCode;
+            totalWordsDisplay.textContent = wordData.length;
+            loadSavedLocalProgress();
+            saveRound();
+            updateReviewBadge();
+            initShuffle('all');
+            initShuffle('review');
+            showCard();
+            setupCloudSync();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startApp);
+        } else {
+            startApp();
+        }
+    </script>
+</body>
+</html>

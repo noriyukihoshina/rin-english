@@ -253,7 +253,7 @@
         };
         
         let sessionCount = 0; 
-        const SESSION_LIMIT = 30; // 30問で区切る
+        const SESSION_LIMIT = 15; // 15問で区切る（りんちゃん用休憩）
         let currentRound = 1;
         let listFilter = 'review'; // 'review' (要復習のみ) or 'all' (累計すべて)
 
@@ -704,7 +704,7 @@
                 }
             }
 
-            // 30問区切り
+            // 15問区切り
             if (sessionCount >= SESSION_LIMIT) {
                 showModal('session', `🎉 ${SESSION_LIMIT}問クリアしました！\nりんちゃん、お疲れ様！少し休憩しますか？`, 'このまま続ける', () => {
                     sessionCount = 0;

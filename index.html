@@ -57,7 +57,7 @@
                 <svg class="w-4 h-4 mr-1 inline text-rin-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                 同期コード:
             </span>
-            <input type="text" id="sync-code-input" class="px-2 py-1 border border-rin-300 rounded text-center font-mono font-bold w-32 focus:outline-none focus:ring-2 focus:ring-rin-500 bg-white" placeholder="rin0826" value="rin0826" />
+            <input type="text" id="sync-code-input" class="px-2 py-1 border border-rin-300 rounded text-center font-mono font-bold w-32 focus:outline-none focus:ring-2 focus:ring-rin-500 bg-white" placeholder="rin0625" value="rin0625" />
             <button onclick="changeSyncCode()" class="px-3 py-1 bg-rin-500 text-white rounded-lg font-medium hover:bg-rin-600 transition-colors shadow-sm">同期設定</button>
             <span id="sync-status" class="ml-2 text-xs font-medium text-emerald-600 flex items-center hidden">
                 <span class="w-2 h-2 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> 同期中
@@ -320,7 +320,12 @@
         let isFlipped = false;
         let currentSort = { key: 'mistakes', order: 'desc' };
         let unsubscribe = null;
-        let syncCode = localStorage.getItem('rin_flashcards_sync_code') || 'rin0826';
+        let savedSyncCode = localStorage.getItem('rin_flashcards_sync_code');
+        if (!savedSyncCode || savedSyncCode === 'rin0826') {
+            savedSyncCode = 'rin0625';
+            localStorage.setItem('rin_flashcards_sync_code', 'rin0625');
+        }
+        let syncCode = savedSyncCode;
         let isSyncing = false; 
 
         // 最新の回答判定を取得（'〇' | '×' | null）

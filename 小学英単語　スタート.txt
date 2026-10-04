@@ -1,0 +1,180 @@
+is
+助動詞
+〜です	主語が三人称単数のときに使います。
+am
+動詞
+～です	I amで「私は〜です」と表します。
+look
+動詞
+見る	look atで「〜を見る」と覚えましょう。
+make
+動詞
+〜を作る	make a cakeのように作る物を続けます。
+see
+動詞
+見る	seeは自然に目に入る「見る」です。
+are
+動詞
+〜である	youや複数の主語と使います。
+get
+動詞
+〜を得る	get upで「起きる」という意味になります。
+buy
+動詞
+〜を買う	buyの過去形はboughtです。
+study
+動詞
+勉強する	study Englishのように勉強する対象を続けます。
+ride
+動詞
+乗る	ride a bikeの形でよく使います。
+watch
+動詞
+～を見る	テレビや映画を見るときに使います。
+teach
+動詞
+～を教える	teach Englishは「英語を教える」です。
+does
+動詞
+doの3人称単数・現在形	doの三人称単数現在形です。
+put
+動詞
+～を置く	put A on Bで「AをBに置く」です。
+meet
+動詞
+〜に会う	人に会うときはmeetを使います。
+turn
+動詞
+曲がる	turn leftで「左に曲がる」です。
+walk
+動詞
+歩く	walk to schoolの形で覚えましょう。
+like
+動詞
+～が好きである	like A betterで「Aのほうが好き」です。
+cook
+動詞
+料理する	cook dinnerのように料理を作ります。
+eat
+動詞
+食べる	eat breakfastの組み合わせが頻出です。
+swim
+動詞
+泳ぐ	swim in the poolの形で使います。
+play
+動詞
+遊ぶ	スポーツや遊びをする意味にもなります。
+drink
+動詞
+～を飲む	drink waterのように飲み物を続けます。
+run
+動詞
+走る	run fastで「速く走る」と言えます。
+ski
+動詞
+スキーをする	skiは「スキーをする」という動詞です。
+read
+動詞
+読む	read a bookのように本を読みます。
+fall
+動詞
+落ちる	fall downで「落ちる」と覚えましょう。
+sing
+動詞
+歌う	sing a songで「歌を歌う」です。
+skate
+動詞
+スケートをする	skateはスケートをするという動詞です。
+check
+動詞
+～を確認する	check your answerで答えを確認します。
+class
+名詞
+授業	in classで「授業中に」と表せます。
+eraser
+名詞
+消しゴム	消しゴムはan eraserと数えます。
+year
+名詞
+年	this yearは「今年」という表現です。
+pencil
+名詞
+えんぴつ	a pencilのように1本ならaを付けます。
+sport
+名詞
+スポーツ	play sportsで「スポーツをする」です。
+museum
+名詞
+博物館	go to a museumで博物館へ行きます。
+house
+名詞
+家	houseは建物としての「家」です。
+pen
+名詞
+ペン	penとpencilを区別して覚えましょう。
+school
+名詞
+学校	go to schoolでは冠詞を付けません。
+box
+名詞
+箱	a box of crayonsで「クレヨン1箱」です。
+book
+名詞
+本	read a bookで本を読むと表せます。
+girl
+名詞
+女の子	boyと対になる女の子を表します。
+station
+名詞
+駅	駅へ行くはgo to the stationです。
+breakfast
+名詞
+朝食	have breakfastで「朝食を食べる」です。
+teacher
+名詞
+先生	school teacherは学校の先生です。
+father
+名詞
+父	父親を表す基本的な語です。
+Japan
+名詞
+日本	国名なので最初の文字を大文字にします。
+post
+名詞
+郵便	post officeは郵便局という意味です。
+clock
+名詞
+時計	時計を読むときにも使う名詞です。
+world
+名詞
+世界	all over the worldで「世界中に」です。
+math
+名詞
+算数	school subjectの算数を表します。
+mother
+名詞
+母	母親を表す基本的な語です。
+restaurant
+名詞
+レストラン	at a restaurantで「レストランで」です。
+festival
+名詞
+お祭り	文化祭などにも使える語です。
+teeth
+名詞
+歯	複数形で使うことが多い名詞です。
+fish
+名詞
+魚	fishは単複同形になることがあります。
+morning
+名詞
+朝	in the morningで「朝に」と表します。
+egg
+名詞
+たまご	an eggのように母音の前はanです。
+friend
+名詞
+友達	a good friendで「よい友達」です。
+desk
+名詞
+机	机の上はon the deskと表します。

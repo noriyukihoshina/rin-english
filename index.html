@@ -199,12 +199,12 @@
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForVercelIntegration00000",
-            authDomain: "english-app-suzu.firebaseapp.com",
-            projectId: "english-app-suzu",
-            storageBucket: "english-app-suzu.firebasestorage.app",
-            messagingSenderId: "123456789012",
-            appId: "flashcards-rin-elem-30"
+            apiKey: "AIzaSyBZaun9Qc6AL0lI40iLGI_23N0pmlUIaac",
+            authDomain: "english-app-97fdb.firebaseapp.com",
+            projectId: "english-app-97fdb",
+            storageBucket: "english-app-97fdb.firebasestorage.app",
+            messagingSenderId: "909278857143",
+            appId: "1:909278857143:web:6bcff3c15b292bb1c14a32"
         };
 
         let app, auth, db;
@@ -436,10 +436,14 @@
                     db = getFirestore(app);
                 }
 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (authErr) {
+                    console.log("Anonymous auth skipped or not required:", authErr);
                 }
                 subscribeToSyncData();
             } catch (err) {

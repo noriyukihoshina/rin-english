@@ -405,6 +405,13 @@
                         });
                     }
                 }
+                const savedOrders = localStorage.getItem('rin_order_states_' + syncCode);
+                if (savedOrders) {
+                    const parsedOrders = JSON.parse(savedOrders);
+                    if (parsedOrders && parsedOrders.all && parsedOrders.all.indices && parsedOrders.all.indices.length === wordData.length) {
+                        orderStates = parsedOrders;
+                    }
+                }
                 saveRound();
                 updateReviewBadge();
             } catch (e) {
@@ -418,7 +425,7 @@
                     .filter(w => w.mistakes > 0 || (w.history && w.history.length > 0) || w.latestResult || w.mistakeRound != null)
                     .map(w => ({ 
                         id: w.id, 
-                        en: w.en,
+                        en: w.en, 
                         mistakes: w.mistakes, 
                         history: w.history,
                         latestResult: w.latestResult,
@@ -426,6 +433,7 @@
                     }));
                 localStorage.setItem('rin_progress_' + syncCode, JSON.stringify(progress));
                 localStorage.setItem('rin_current_round_' + syncCode, currentRound.toString());
+                localStorage.setItem('rin_order_states_' + syncCode, JSON.stringify(orderStates));
             } catch (e) {
                 console.warn("Failed to save local progress:", e);
             }
@@ -485,6 +493,11 @@
                         if (typeof data.currentRound === 'number') {
                             currentRound = data.currentRound;
                         }
+                        if (data.orderStates && data.orderStates.all && Array.isArray(data.orderStates.all.indices) && data.orderStates.all.indices.length === wordData.length) {
+                            orderStates = data.orderStates;
+                        } else if (!orderStates.all.indices || orderStates.all.indices.length !== wordData.length) {
+                            initShuffle('all');
+                        }
                         saveLocalProgress();
                         saveRound();
                         updateReviewBadge();
@@ -520,6 +533,7 @@
                 await setDoc(docRef, {
                     words: wordsToSave,
                     currentRound: currentRound,
+                    orderStates: orderStates,
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
             } catch (err) {
@@ -552,19 +566,51 @@
         function initShuffle(mode) {
             let indices = [];
             if (mode === 'all') {
+                const unattempted = [];
+                const attempted = [];
+                wordData.forEach((w, i) => {
+                    if (!w.history || w.history.length === 0) {
+                        unattempted.push(i);
+                    } else {
+                        attempted.push(i);
+                    }
+                });
+
+                // まだ一度も解いていない単語があり、かつ一部解答済みがある場合（1周目の未完走時）
+                if (unattempted.length > 0 && attempted.length > 0) {
+                    for (let i = attempted.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [attempted[i], attempted[j]] = [attempted[j], attempted[i]];
+                    }
+                    for (let i = unattempted.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [unattempted[i], unattempted[j]] = [unattempted[j], unattempted[i]];
+                    }
+                    indices = [...attempted, ...unattempted];
+                    orderStates[mode].indices = indices;
+                    orderStates[mode].currentIndex = attempted.length;
+                    return;
+                }
+
+                // 全問未解答、または全問解答済みの場合は全問均等シャッフル
                 indices = Array.from({ length: wordData.length }, (_, i) => i);
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                orderStates[mode].indices = indices;
+                orderStates[mode].currentIndex = 0;
             } else if (mode === 'review') {
                 wordData.forEach((w, i) => { 
                     if (w.mistakeRound === currentRound) indices.push(i); 
                 });
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                orderStates[mode].indices = indices;
+                orderStates[mode].currentIndex = 0;
             }
-
-            for (let i = indices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [indices[i], indices[j]] = [indices[j], indices[i]];
-            }
-            orderStates[mode].indices = indices;
-            orderStates[mode].currentIndex = 0;
         }
 
         function updateModeUI() {
@@ -1097,8 +1143,12 @@
             loadSavedLocalProgress();
             saveRound();
             updateReviewBadge();
-            initShuffle('all');
-            initShuffle('review');
+            if (!orderStates.all.indices || orderStates.all.indices.length !== wordData.length) {
+                initShuffle('all');
+            }
+            if (!orderStates.review.indices) {
+                initShuffle('review');
+            }
             showCard();
             setupCloudSync();
         }

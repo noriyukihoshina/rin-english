@@ -209,7 +209,7 @@
 
         let app, auth, db;
 
-        // 小学生向け英単語（90問：基本60単語＋重要名詞30単語）
+        // 小学生向け英単語（120問：基本60単語＋重要名詞30単語＋生活単語30単語）
         const initialWordList = [
             { id: 1, en: "is", kana: "（イズ）", ja: "〜です", mistakes: 0, history: [] },
             { id: 2, en: "am", kana: "（アム）", ja: "〜です", mistakes: 0, history: [] },
@@ -300,7 +300,37 @@
             { id: 87, en: "moon", kana: "（ムーン）", ja: "月（つき）", mistakes: 0, history: [] },
             { id: 88, en: "star", kana: "（スター）", ja: "星（ほし）", mistakes: 0, history: [] },
             { id: 89, en: "chair", kana: "（チェア）", ja: "いす", mistakes: 0, history: [] },
-            { id: 90, en: "room", kana: "（ルーム）", ja: "部屋（へや）", mistakes: 0, history: [] }
+            { id: 90, en: "room", kana: "（ルーム）", ja: "部屋（へや）", mistakes: 0, history: [] },
+            { id: 91, en: "happy", kana: "（ハッピー）", ja: "うれしい、しあわせな", mistakes: 0, history: [] },
+            { id: 92, en: "sad", kana: "（サッド）", ja: "かなしい", mistakes: 0, history: [] },
+            { id: 93, en: "angry", kana: "（アングリー）", ja: "おこった", mistakes: 0, history: [] },
+            { id: 94, en: "tired", kana: "（タイアード）", ja: "つかれた", mistakes: 0, history: [] },
+            { id: 95, en: "hungry", kana: "（ハングリー）", ja: "おなかがすいた", mistakes: 0, history: [] },
+            { id: 96, en: "sleepy", kana: "（スリーピー）", ja: "ねむい", mistakes: 0, history: [] },
+            { id: 97, en: "excited", kana: "（イクサイティッド）", ja: "わくわくした", mistakes: 0, history: [] },
+            { id: 98, en: "January", kana: "（ジャニュアリー）", ja: "1月", mistakes: 0, history: [] },
+            { id: 99, en: "February", kana: "（フェブラリー）", ja: "2月", mistakes: 0, history: [] },
+            { id: 100, en: "March", kana: "（マーチ）", ja: "3月", mistakes: 0, history: [] },
+            { id: 101, en: "April", kana: "（エイプリル）", ja: "4月", mistakes: 0, history: [] },
+            { id: 102, en: "May", kana: "（メイ）", ja: "5月", mistakes: 0, history: [] },
+            { id: 103, en: "June", kana: "（ジューン）", ja: "6月", mistakes: 0, history: [] },
+            { id: 104, en: "sunny", kana: "（サニー）", ja: "はれ（晴れ）", mistakes: 0, history: [] },
+            { id: 105, en: "rainy", kana: "（レイニー）", ja: "あめ（雨）", mistakes: 0, history: [] },
+            { id: 106, en: "cloudy", kana: "（クラウディ）", ja: "くもり（曇り）", mistakes: 0, history: [] },
+            { id: 107, en: "snowy", kana: "（スノウイ）", ja: "ゆき（雪）", mistakes: 0, history: [] },
+            { id: 108, en: "hot", kana: "（ホット）", ja: "あつい（暑い）", mistakes: 0, history: [] },
+            { id: 109, en: "cold", kana: "（コールド）", ja: "さむい（寒い）", mistakes: 0, history: [] },
+            { id: 110, en: "car", kana: "（カー）", ja: "くるま（車）", mistakes: 0, history: [] },
+            { id: 111, en: "bus", kana: "（バス）", ja: "バス", mistakes: 0, history: [] },
+            { id: 112, en: "train", kana: "（トレイン）", ja: "でんしゃ（電車）", mistakes: 0, history: [] },
+            { id: 113, en: "bike", kana: "（バイク）", ja: "じてんしゃ（自転車）", mistakes: 0, history: [] },
+            { id: 114, en: "plane", kana: "（プレイン）", ja: "ひこうき（飛行機）", mistakes: 0, history: [] },
+            { id: 115, en: "television", kana: "（テレビジョン）", ja: "テレビ", mistakes: 0, history: [] },
+            { id: 116, en: "computer", kana: "（コンピューター）", ja: "パソコン、コンピューター", mistakes: 0, history: [] },
+            { id: 117, en: "phone", kana: "（フォン）", ja: "でんわ", mistakes: 0, history: [] },
+            { id: 118, en: "table", kana: "（テーブル）", ja: "テーブル", mistakes: 0, history: [] },
+            { id: 119, en: "door", kana: "（ドア）", ja: "ドア、とびら", mistakes: 0, history: [] },
+            { id: 120, en: "window", kana: "（ウィンドウ）", ja: "まど（窓）", mistakes: 0, history: [] }
         ];
 
         let wordData = [...initialWordList];

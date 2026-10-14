@@ -1181,6 +1181,21 @@
             }
             showCard();
             setupCloudSync();
+
+            // 1回限定の応援メッセージ表示
+            const bonusMsgKey = 'rin_bonus_msg_shown_v120';
+            if (!localStorage.getItem(bonusMsgKey)) {
+                setTimeout(() => {
+                    showModal('alert',
+                        'がんばってるから問題をふやしたよ！\nがんばってね～(=^・^=)',
+                        'がんばる！🌸',
+                        () => {
+                            localStorage.setItem(bonusMsgKey, 'true');
+                            closeModal();
+                        }
+                    );
+                }, 400);
+            }
         }
 
         if (document.readyState === 'loading') {

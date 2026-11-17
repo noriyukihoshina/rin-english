@@ -100,21 +100,22 @@
                 <div class="relative w-full max-w-md aspect-[4/3] perspective cursor-pointer select-none" id="flashcard" onclick="flipCard()">
                     <div id="card-inner" class="w-full h-full relative preserve-3d transition-transform">
                         
-                        <!-- 表面 -->
+                        <!-- 表面（出題：英単語のみ） -->
                         <div class="absolute w-full h-full bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center backface-hidden border-2 border-rin-100 p-6 hover:border-rin-300 transition-colors">
                             <div id="front-mistake-count" class="absolute top-4 right-4 text-rose-500 font-bold bg-rose-50 px-2.5 py-1 rounded-full text-xs hidden border border-rose-100">
                                 × <span id="front-mistake-number">0</span>
                             </div>
                             <h2 id="word-en" class="text-4xl md:text-5xl font-bold mb-3 text-center break-all text-gray-800 tracking-tight"></h2>
-                            <p id="word-kana" class="text-lg md:text-xl text-rin-400 text-center font-medium"></p>
+                            <p id="word-kana" class="text-lg md:text-xl text-rin-500 text-center font-bold hidden"></p>
                         </div>
 
-                        <!-- 裏面 -->
+                        <!-- 裏面（答え：カタカナ読み＋日本語の意味） -->
                         <div class="absolute w-full h-full bg-white rounded-3xl shadow-lg flex flex-col items-center justify-center backface-hidden rotate-y-180 border-2 border-rin-300 p-6 bg-gradient-to-b from-white to-rin-50/40">
                             <div id="back-mistake-count" class="absolute top-4 right-4 text-rose-500 font-bold bg-rose-50 px-2.5 py-1 rounded-full text-xs hidden border border-rose-100">
                                 × <span id="back-mistake-number">0</span>
                             </div>
-                            <h3 class="text-xs font-bold text-rin-500 mb-3 uppercase tracking-wider bg-rin-100 px-3 py-1 rounded-full">日本語の意味</h3>
+                            <h3 class="text-xs font-bold text-rin-500 mb-2 uppercase tracking-wider bg-rin-100 px-3 py-1 rounded-full">こたえ</h3>
+                            <p id="word-kana-back" class="text-xl md:text-2xl font-bold text-rin-600 mb-2 tracking-wider"></p>
                             <p id="word-ja" class="text-2xl md:text-3xl font-bold text-center text-gray-800 leading-relaxed px-4"></p>
                         </div>
                     </div>
@@ -398,6 +399,7 @@
         const cardInner = document.getElementById('card-inner');
         const wordEnEl = document.getElementById('word-en');
         const wordKanaEl = document.getElementById('word-kana');
+        const wordKanaBackEl = document.getElementById('word-kana-back');
         const wordJaEl = document.getElementById('word-ja');
         const currentIndexDisplay = document.getElementById('current-index-display');
         const totalWordsDisplay = document.getElementById('total-words-display');
@@ -701,8 +703,10 @@
                 const mistakeCount = reviewWords.length;
                 wordEnEl.textContent = learningMode === 'review' ? '復習完了！' : `第${currentRound}周 完走！`;
                 wordKanaEl.textContent = mistakeCount > 0 ? `今周のミス: ${mistakeCount}問（復習できます）` : 'パーフェクト達成！🌸';
+                wordKanaEl.classList.remove('hidden');
                 wordEnEl.classList.replace('text-2xl', 'text-4xl');
                 wordEnEl.classList.replace('md:text-3xl', 'md:text-5xl');
+                if (wordKanaBackEl) wordKanaBackEl.textContent = '';
                 wordJaEl.textContent = '';
                 frontMistakeCountEl.classList.add('hidden');
                 backMistakeCountEl.classList.add('hidden');
@@ -731,7 +735,9 @@
             }
             
             wordEnEl.textContent = word.en;
-            wordKanaEl.textContent = word.kana;
+            wordKanaEl.textContent = '';
+            wordKanaEl.classList.add('hidden');
+            if (wordKanaBackEl) wordKanaBackEl.textContent = word.kana;
             wordJaEl.textContent = word.ja;
             
             if (word.en.length > 15) {

@@ -677,10 +677,10 @@
 
         function showCard() {
             const state = orderStates[learningMode];
-            if (!state || state.indices.length === 0) {
+            if (!state || !state.indices || state.indices.length === 0) {
                 if (learningMode === 'review') {
                     initShuffle('review');
-                    if (orderStates.review.indices.length === 0) {
+                    if (!orderStates.review.indices || orderStates.review.indices.length === 0) {
                         setMode('all');
                         return;
                     }
@@ -688,11 +688,47 @@
                     initShuffle('all');
                 }
             }
-            if (state.indices.length === 0) return;
+            if (!state.indices || state.indices.length === 0) return;
             
+            // 周回または復習モードの全問完走時のリカバリー（画面白紙化を防止）
+            if (state.currentIndex >= state.indices.length) {
+                currentIndexDisplay.textContent = state.indices.length;
+                totalWordsDisplay.textContent = state.indices.length;
+                sessionCountDisplay.textContent = sessionCount;
+
+                // カード表面に完走メッセージを表示して白紙化を完全に防止
+                const reviewWords = getReviewWords();
+                const mistakeCount = reviewWords.length;
+                wordEnEl.textContent = learningMode === 'review' ? '復習完了！' : `第${currentRound}周 完走！`;
+                wordKanaEl.textContent = mistakeCount > 0 ? `今周のミス: ${mistakeCount}問（復習できます）` : 'パーフェクト達成！🌸';
+                wordEnEl.classList.replace('text-2xl', 'text-4xl');
+                wordEnEl.classList.replace('md:text-3xl', 'md:text-5xl');
+                wordJaEl.textContent = '';
+                frontMistakeCountEl.classList.add('hidden');
+                backMistakeCountEl.classList.add('hidden');
+                document.getElementById('flip-btn').classList.add('hidden');
+                judgmentControlsEl.classList.add('hidden');
+
+                if (isFlipped) {
+                    cardInner.classList.remove('rotate-y-180');
+                    isFlipped = false;
+                }
+
+                if (learningMode === 'all') {
+                    promptRoundClearOrReview(false);
+                } else if (learningMode === 'review') {
+                    promptRoundClearOrReview(true);
+                }
+                return;
+            }
+
             const realIndex = state.indices[state.currentIndex];
             const word = wordData[realIndex];
-            if (!word) return;
+            if (!word) {
+                state.currentIndex = 0;
+                showCard();
+                return;
+            }
             
             wordEnEl.textContent = word.en;
             wordKanaEl.textContent = word.kana;
@@ -730,6 +766,11 @@
         }
 
         window.flipCard = function() {
+            const state = orderStates[learningMode];
+            if (state && state.currentIndex >= state.indices.length) {
+                promptRoundClearOrReview(learningMode === 'review');
+                return;
+            }
             isFlipped = !isFlipped;
             if (isFlipped) {
                 cardInner.classList.add('rotate-y-180');
